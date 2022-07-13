@@ -31,7 +31,8 @@ for item in items:
         finder = db.yanewsdb.find({'link':{'$eq':link_text}})
         if finder!= link_text:
             news['link'] = link_text
-    db.yanewsdb.update_one(news)
+    if news:        
+        db.yanewsdb.update_one(news)
 
 
     
