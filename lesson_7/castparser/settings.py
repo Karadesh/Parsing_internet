@@ -15,6 +15,8 @@ NEWSPIDER_MODULE = 'castparser.spiders'
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
 
+IMAGES_STORE = 'photos'
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0'
 
@@ -66,6 +68,7 @@ COOKIES_ENABLED = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'castparser.pipelines.CastparserPipeline': 300,
+    'castparser.pipelines.CastphotosPipeline': 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

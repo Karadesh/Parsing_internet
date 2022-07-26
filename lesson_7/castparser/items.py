@@ -4,9 +4,14 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from itemloaders.processors import TakeFirst
+from itemloaders.processors import Identity
 
 
 class CastparserItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    name = scrapy.Field(output_processor=TakeFirst())
+    price = scrapy.Field(output_processor=Identity())
+    photos = scrapy.Field()
+    link = scrapy.Field(output_processor=TakeFirst())
+

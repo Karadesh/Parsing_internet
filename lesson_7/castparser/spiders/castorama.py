@@ -1,12 +1,14 @@
 import scrapy
 from scrapy.http import HtmlResponse
+from items import CastparserItem
+from scrapy.loader import ItemLoader
 #from selenium import webdriver
 #from selenium.webdriver.firefox.service import Service
 #from selenium.webdriver.common.by import By
 #from selenium.webdriver.support import expected_conditions as EC
 #from selenium.webdriver.support.ui import WebDriverWait
 #from selenium.common.exceptions import TimeoutException
-import base64
+#import base64
 
 
 class CastoramaSpider(scrapy.Spider):
@@ -38,17 +40,21 @@ class CastoramaSpider(scrapy.Spider):
             yield response.follow(link, callback=self.parse_ads)
 
     def parse_ads(self, response:HtmlResponse):
-        name = response.xpath("//h1/text()").get()
+        loader = ItemLoader(item=CastparserItem(), response=response)
+        loader.add_xpath("name", "//h1/text()")
+        loader.add_xpath("price", "//div[@class = 'price-box']//text()")
+        loader.add_xpath("photos", "//ul[@class = 'swiper-wrapper']//span/@content")
+        loader.add_value("link", response.url)
+        yield loader.load_item()
+
+
+#        name = response.xpath("//h1/text()").get()
         price = response.xpath("//div[@class = 'price-box']//text()").getall()
-        link = response.url
-#        photos = response.xpath("//ul[@class = 'swiper-wrapper']//span/@content | //ul[@class = 'swiper-wrapper']//@src").getall()
-        photos = response.xpath("//ul[@class = 'swiper-wrapper']//@src").getall()
-        for i in photos:
-            print(base64.b64decode(i))
-#repair price
-#        true_price = []
-#        true_price.append(price[2])
-#        true_price.append(price[3])
+#        link = response.url
+#        photos = response.xpath("//ul[@class = 'swiper-wrapper']//span/@content | //img[contains(@class, 'top-slide__img')]/@src").getall()
+#        photos = response.xpath("//ul[@class = 'swiper-wrapper']//span/@content").getall()
+#        yield CastparserItem(name=name, price=price, link=link, photos=photos)
+
         
         
 
