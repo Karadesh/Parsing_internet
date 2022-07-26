@@ -21,6 +21,7 @@ class CastoramaSpider(scrapy.Spider):
         #print(self.start_urls)
 
     def parse(self, response:HtmlResponse):
+#selenium tries
  #       s = Service('./geckodriver')
  #       driver = webdriver.Firefox(service=s)
  #       driver.get(f'https://www.castorama.ru/electric-appliances/cables-and-wires/')
@@ -39,17 +40,30 @@ class CastoramaSpider(scrapy.Spider):
         for link in item_links:
             yield response.follow(link, callback=self.parse_ads)
 
+    
     def parse_ads(self, response:HtmlResponse):
+        #kolhoz time!
+        price = response.xpath("//div[@class = 'price-box']//text()").getall()
+        true_price = []
+        try:
+            int_price = int(price[2].replace(' ', ''))
+            true_price.append(int_price)
+        except:
+            true_price.append(price[2])
+        true_price.append(price[3].replace(' ', ''))
+        #kolhoz time over!
         loader = ItemLoader(item=CastparserItem(), response=response)
         loader.add_xpath("name", "//h1/text()")
-        loader.add_xpath("price", "//div[@class = 'price-box']//text()")
+        loader.add_value("price", true_price)
         loader.add_xpath("photos", "//ul[@class = 'swiper-wrapper']//span/@content")
         loader.add_value("link", response.url)
         yield loader.load_item()
 
 
 #        name = response.xpath("//h1/text()").get()
-        price = response.xpath("//div[@class = 'price-box']//text()").getall()
+        
+
+    
 #        link = response.url
 #        photos = response.xpath("//ul[@class = 'swiper-wrapper']//span/@content | //img[contains(@class, 'top-slide__img')]/@src").getall()
 #        photos = response.xpath("//ul[@class = 'swiper-wrapper']//span/@content").getall()

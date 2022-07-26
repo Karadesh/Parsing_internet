@@ -8,21 +8,28 @@
 import scrapy
 from itemadapter import ItemAdapter
 from scrapy.pipelines.images import ImagesPipeline
+from pymongo import MongoClient
 
 class CastparserPipeline:
+    def __init__(self) -> None:
+        client = MongoClient('localhost', 27017)
+        self.mongo_base = client.cables
+
     def process_item(self, item, spider):
-        item['price'] = self.price_corrector(item['price'][0])
+#        item['price'] = self.price_corrector(item['price'][0])
+        collection = self.mongo_base[spider.name]
+        collection.insert_one(item)
         return item
 
-    def price_corrector(price):
-        true_price = []
-        try:
-            int_price = int(price[2].replace(' ', ''))
-            true_price.append(int_price)
-        except:
-            true_price.append(price[2])
-        true_price.append(price[3].replace(' ', ''))
-        return true_price
+#    def price_corrector(price):
+#        true_price = []
+#        try:
+#            int_price = int(price[2].replace(' ', ''))
+#            true_price.append(int_price)
+#        except:
+#            true_price.append(price[2])
+#        true_price.append(price[3].replace(' ', ''))
+#        return true_price
 
 class CastphotosPipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
